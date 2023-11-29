@@ -3,4 +3,6 @@ project(Stars)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(Stars main.cpp)
+add_executable(Stars main.cpp
+        Graph.cpp
+        Graph.h)
