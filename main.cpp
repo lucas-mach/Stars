@@ -16,8 +16,17 @@ int main() {
     Graph g;
     Star s("lucas");
     Star e("bill");
-    g.Add(&s, &e);
-    cout << g.adjList[&s][&e] << endl;
+    Star a("will");
+    Star b("gill");
+    Star n("to");
+    Star m("ll");
+    Star l("lu");
+    Star k("b");
+    Star j("as");
+    Star h("b");
+    Star f("bucas");
+    Star w("mill");
+
 
     return 0;
 }
