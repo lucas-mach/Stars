@@ -28,16 +28,16 @@ public:
         adjList[s] = {};
         // Iterate through all stars
         for (auto iter = adjList.begin(); iter != adjList.end(); iter++) {
-            if (iter->second.size() < 5) {
+            if (iter->second.size() < 5 and s->name != iter->first->name) {
                 adjList[iter->first][s] = CalcDistance(iter->first, s);
             }
-            else {
+            else if (iter->second.size() >= 5 and s->name != iter->first->name) {
                 RemoveFurthestStar(iter->first, s);
             }
-            if (adjList[s].size() < 5) {
+            if (adjList[s].size() < 5 and s->name != iter->first->name) {
                 adjList[s][iter->first] = CalcDistance(s, iter->first);
             }
-            else {
+            else if (adjList[s].size() >= 5 and s->name != iter->first->name){
                 RemoveFurthestStar(s, iter->first);
             }
         }
@@ -67,9 +67,12 @@ public:
 
     void PrintStarConnections() {
         for (auto iter = adjList.begin(); iter != adjList.end(); iter++) {
-            cout << iter->first->name << endl;
+            for (auto it = adjList[iter->first].begin(); it != adjList[iter->first].end(); it++) {
+                cout << it->first->name << endl;
+            }
+            cout <<"^ is for star: " <<iter->first->name <<"-----------------" << endl;
         }
-        cout << endl;
+
     }
 
 

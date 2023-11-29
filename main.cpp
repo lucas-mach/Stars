@@ -26,6 +26,20 @@ int main() {
     Star h("b");
     Star f("bucas");
     Star w("mill");
+    g.Add(&s);
+    g.Add(&e);
+    g.Add(&w);
+    g.Add(&f);
+    g.Add(&a);
+    g.Add(&b);
+    g.Add(&n);
+    g.Add(&m);
+    g.Add(&l);
+    g.Add(&k);
+    g.Add(&j);
+
+
+    g.PrintStarConnections();
 
 
     return 0;
