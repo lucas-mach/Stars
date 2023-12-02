@@ -133,14 +133,14 @@ public:
             }
 
             //Connection of new star to iterated star
-
+            /*
             if (adjList[s].size() < maxConnections and s->name != iter->first->name) {
                 adjList[s][iter->first] = CalcDistance(s, iter->first);
             }
 
             else if (adjList[s].size() >= maxConnections and s->name != iter->first->name){
                 RemoveFurthestStar(s, iter->first);
-            }
+            } */
         }
 
         //if (m.find(s->name) == m.end()) {    // Is not in map
