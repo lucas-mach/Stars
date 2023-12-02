@@ -4,18 +4,34 @@
 #include <tuple>
 #include <iostream>
 #include <math.h>
+#include <set>
+#include <stdlib.h>
+#include <queue>
 using namespace std;
 
 struct Star {
-    string name;
-    float x;
-    float y;
-    float z;
-    Star(string name, float x, float y, float z) { // Need to add coordinate system to calculate distances between stars
+    int name;
+    string constellation;
+    double distFromSun;
+    double x, y, z;
+    double colorIndex;
+    double radialVelocity;
+    double vx, vy, vz;
+
+
+    Star(int name, string constellation, double distFromSun, double x, double y, double z,
+         double colorIndex, double radialVelocity, double vx, double vy, double vz) { // Need to add coordinate system to calculate distances between stars
         this->name = name;
+        this->constellation = constellation;
+        this->distFromSun = distFromSun;
         this->x = x;
         this->y = y;
         this->z = z;
+        this->colorIndex = colorIndex;
+        this->radialVelocity = radialVelocity;
+        this->vx = vx;
+        this->vy = vy;
+        this->vz = vz;
     }
 };
 
@@ -123,7 +139,7 @@ public:
         randomFind.push_back(s);
         // Iterate through all stars
         for (auto iter = adjList.begin(); iter != adjList.end(); iter++) {
-            //Connection of iterated Star to new star
+            // connection of iterated Star to new star
             if (iter->second.size() < maxConnections and s->name != iter->first->name) {
                 adjList[iter->first][s] = CalcDistance(iter->first, s);
             }
