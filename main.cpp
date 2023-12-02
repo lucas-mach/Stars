@@ -23,7 +23,7 @@ int main() {
 
         getline(file, line); // skip header line
         while (getline(file, line)) {
-            if (starCount >= 10000) { // cap star count at 120,000
+            if (starCount >= 100000) { // cap star count at 120,000
                 break;
             }
 
