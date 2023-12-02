@@ -1,5 +1,12 @@
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include "Graph.h"
+#include <vector>
+#include <ctime>
+//#include <SFML/Graphics.hpp>
+
+
 
 using namespace std;
 
@@ -13,8 +20,8 @@ using namespace std;
 ***/
 
 
-
 int main() {
+    srand(time(NULL));
     fstream file("../HYGData.csv");
     string line;
     Graph starSystem;
