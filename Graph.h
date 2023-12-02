@@ -15,26 +15,27 @@ struct Star {
 class Graph {
     map<Star*, map<Star*, int>> adjList; //Maps, a star to its other stars, with the weight(distance)
     map<string, Star*> m;   //maps name of star to corresponding object, created to easily retrieve object data with specified name
+    int maxConnections = 5; // Max amount of star connections 1 star can have
 public:
-    void Add(Star* s) {   // Add Star to every other star if the other star has less than 5 star connections
+    void Add(Star* s) {   // Add Star to every other star if the other star has less than "MaxConntection" star connections
                         // If has more than 5, find the star with the largest distance and replace
         adjList[s] = {};
 
         // Iterate through all stars
         for (auto iter = adjList.begin(); iter != adjList.end(); iter++) {
             //Connection of iterated Star to new star
-            if (iter->second.size() < 5 and s->name != iter->first->name) {
+            if (iter->second.size() < maxConnections and s->name != iter->first->name) {
                 adjList[iter->first][s] = CalcDistance(iter->first, s);
             }
-            else if (iter->second.size() >= 5 and s->name != iter->first->name) {
+            else if (iter->second.size() >= maxConnections and s->name != iter->first->name) {
                 RemoveFurthestStar(iter->first, s);
             }
 
             //Connection of new star to iterated star
-            if (adjList[s].size() < 5 and s->name != iter->first->name) {
+            if (adjList[s].size() < maxConnections and s->name != iter->first->name) {
                 adjList[s][iter->first] = CalcDistance(s, iter->first);
             }
-            else if (adjList[s].size() >= 5 and s->name != iter->first->name){
+            else if (adjList[s].size() >= maxConnections and s->name != iter->first->name){
                 RemoveFurthestStar(s, iter->first);
             }
         }
