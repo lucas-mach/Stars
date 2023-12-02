@@ -3,24 +3,32 @@
 #include <string>
 #include <tuple>
 #include <iostream>
+#include <math.h>
 using namespace std;
 
 struct Star {
     string name;
-    Star(string name) { //Need to add coordinate system to calculate distances between stars
+    float x;
+    float y;
+    float z;
+    Star(string name, float x, float y, float z) { // Need to add coordinate system to calculate distances between stars
         this->name = name;
+        this->x = x;
+        this->y = y;
+        this->z = z;
     }
 };
 
 class Graph {
     map<Star*, map<Star*, int>> adjList; //Maps, a star to its other stars, with the weight(distance)
     map<string, Star*> m;   //maps name of star to corresponding object, created to easily retrieve object data with specified name
+    vector<Star*> randomFind;
     int maxConnections = 5; // Max amount of star connections 1 star can have
 public:
     void Add(Star* s) {   // Add Star to every other star if the other star has less than "MaxConntection" star connections
                         // If has more than 5, find the star with the largest distance and replace
         adjList[s] = {};
-
+        randomFind.push_back(s);
         // Iterate through all stars
         for (auto iter = adjList.begin(); iter != adjList.end(); iter++) {
             //Connection of iterated Star to new star
@@ -45,8 +53,8 @@ public:
         }
     }
 
-    int CalcDistance(Star* first, Star* second) {   //Calculate distance between two stars
-        return 0;
+    float CalcDistance(Star* first, Star* second) {   //Calculate distance between two stars
+
     }
 
     void RemoveFurthestStar(Star* star, Star* newStar) {    // Erase the Star furthest of the 5 connections if passed in star is smaller
@@ -71,12 +79,6 @@ public:
             cout <<"^ is for star: " <<iter->first->name <<"-----------------" << endl;
         }
     }
-
-
-
-
-
-
 };
 
 
