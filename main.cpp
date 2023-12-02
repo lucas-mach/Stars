@@ -12,6 +12,8 @@ using namespace std;
 
 ***/
 
+
+
 int main() {
     Graph g;
     Star s("lucas");
