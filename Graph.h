@@ -7,6 +7,7 @@
 #include <set>
 #include <stdlib.h>
 #include <queue>
+#include <stack>
 using namespace std;
 
 struct Star {
@@ -36,11 +37,13 @@ struct Star {
 };
 
 class Graph {
-    map<Star*, map<Star*, double>> adjList; //Maps, a star to its other stars, with the weight(distance)
-    map<string, Star*> m;   //maps name of star to corresponding object, created to easily retrieve object data with specified name
+    map<Star*, map<Star*, double>> adjList; // maps, a star to its other stars, with the weight (distance)
+    map<string, Star*> m;   // maps name of star to corresponding object, created to easily retrieve object data with specified name
+    map<Star*,double> maxDistance;
     vector<Star*> randomFind;
     int maxConnections = 5; // max amount of star connections 1 star can have
     int count = 0;
+
     double CalcDistance(Star* first, Star* second) {   // Calculate distance between two stars
         return sqrt(pow((second->x - first->x), 2) + pow((second->y - first->y), 2) + pow((second->z - first->z), 2));
     }
@@ -60,61 +63,98 @@ class Graph {
     }
 
     
-    Star* BFS(Star* start, Star* search) {
+    Star* BFS(Star* s, Star* search) {
         // implementing a queue for BFS
         queue<Star*> q;
-
+        auto iter = adjList.begin();
         // use a set to track visited star
         set<Star*> visitedStar;
+        set<Star*> v;
+        v.insert(iter->first);
         // start with specified star
-        q.push(start);
-        visitedStar.insert(start);
+        q.push(iter->first);
+        visitedStar.insert(iter->first);
+        bool run = true;
+        while (run) {
+            while (!q.empty()) {
+                Star *currStar = q.front();
+                q.pop();
 
-        while (!q.empty()) {
-            Star *currStar = q.front();
-            q.pop();
+                //cout << currStar->name << endl;
+                // check is the current star is one of the closest
+                if (currStar == search) {
+                    //cout << search->name << endl;
 
-            cout << currStar->name << endl;
-            // check is the current star is one of the closest
-            if (currStar == search) {
-                cout << search->name << endl;
-                return currStar;
-            }
-            // check the adjacent stars
-            for (auto it: adjList[currStar]) {
-                Star *adjacentStar = it.first;
-
-                // if the adjacent list isn't visitied add it to the queue
-                if (visitedStar.find(adjacentStar) == visitedStar.end()) {
-                    q.push(adjacentStar);
-                    visitedStar.insert(adjacentStar);
+                    return currStar;
                 }
+                // check the adjacent stars
+                for (auto it: adjList[currStar]) {
+                    Star *adjacentStar = it.first;
 
-
+                    // if the adjacent list isn't visitied add it to the queue
+                    if (visitedStar.find(adjacentStar) == visitedStar.end()) {
+                        q.push(adjacentStar);
+                        visitedStar.insert(adjacentStar);
+                    }
+                }
             }
-        }
-        return nullptr;
-    }
-
-    Star* HelperDFS(Star* currStar, Star* search, set<Star*> &s) {
-        if (s.find(currStar) != s.end()) {  //Star is already in Set
-            return nullptr;
-        }
-        for (auto it = adjList[currStar].begin(); it != adjList[currStar].end(); it++) {
-            if (it->first == search) { return currStar;}    //If star found return star
-            else {  //Else call Recursive function with next
-                s.insert(it->first);
-                HelperDFS(it->first, search, s);
+            while (visitedStar.find(iter->first) != visitedStar.end()) {
+                iter++;
             }
+            visitedStar.clear();
+            visitedStar.insert(iter->first);
+            v.insert(iter->first);
+            q.push(iter->first);
+
         }
-    }
 
-    Star* DFS(Star* start, Star* search) {
-        set<Star*> set = {};
-        return HelperDFS(start, search , set);
 
     }
 
+    Star* DFS(Star* st, Star* search) {
+        // implementing a stack for BFS
+        stack<Star *> s;
+        auto iter = adjList.begin();
+        // use a set to track visited star
+        set<Star *> visitedStar;
+        set<Star*> v;   //Set containing looked at initial stars
+        v.insert(iter->first);
+        // start with specified star
+        s.push(iter->first);
+        visitedStar.insert(iter->first);
+        bool run = true;
+        while (run) {   //Outer loop because our graph can be disconnected, meaning check all verticies and their connections
+            while (!s.empty()) {
+                Star *currStar = s.top();
+                s.pop();
+
+                //cout << currStar->name << endl;
+                // check is the current star is one of the closest
+                if (currStar == search) {
+                    //cout << search->name << endl;
+                    return currStar;
+                }
+                // check the adjacent stars
+                for (auto it: adjList[currStar]) {
+                    Star *adjacentStar = it.first;
+
+                    // if the adjacent list isn't visitied add it to the queue
+                    if (visitedStar.find(adjacentStar) == visitedStar.end()) {
+                        s.push(adjacentStar);
+                        visitedStar.insert(adjacentStar);
+                    }
+                }
+            }
+            while (v.find(iter->first) != v.end()) {
+                iter++;
+            }
+            v.insert(iter->first);
+            visitedStar.clear();
+            visitedStar.insert(iter->first);
+            s.push(iter->first);
+        }
+
+    }
 
 public:
     ~Graph() {
@@ -124,54 +164,53 @@ public:
     }
     Star* SearchRandomStar() {
         int randint = rand() % count;
+        //cout << count << endl;
+
         Star* randStar = randomFind[randint];
         auto iter = adjList.begin();
         Star* d = DFS(iter->first, randStar);
         Star* b = BFS(iter->first, randStar);
-        cout << randStar->name << " " << d->name << " " << b->name << endl;
+
         if (d == b) {return d;}
     }
 
-    void AddStar(Star* s) {   // add Star to every other star if the other star has less than "MaxConnection" star connections
-                        // if has more than "maxConnection", find the star with the largest distance and replace
+    void AddStar(Star* s) { // add Star to every other star if the other star has less than "MaxConnection" star connections
+        // if has more than "maxConnection", find the star with the largest distance and replace
         adjList[s] = {};
         count++;
         randomFind.push_back(s);
-        // Iterate through all stars
+        // iterate through all stars
         for (auto iter = adjList.begin(); iter != adjList.end(); iter++) {
             // connection of iterated Star to new star
             if (iter->second.size() < maxConnections and s->name != iter->first->name) {
-                adjList[iter->first][s] = CalcDistance(iter->first, s);
+                double dis = CalcDistance(iter->first, s);
+                adjList[iter->first][s] = dis;
+                maxDistance[s] = dis;
             }
-
-            else if (iter->second.size() >= maxConnections and s->name != iter->first->name) {
+            else if (iter->second.size() >= maxConnections and s->name != iter->first->name and maxDistance[s] >
+            CalcDistance(iter->first, s)) {  //THIS ONE
                 RemoveFurthestStar(iter->first, s);
             }
 
-            //Connection of new star to iterated star
-            /*
+            // connection of new star to iterated star
+
             if (adjList[s].size() < maxConnections and s->name != iter->first->name) {
                 adjList[s][iter->first] = CalcDistance(s, iter->first);
             }
 
             else if (adjList[s].size() >= maxConnections and s->name != iter->first->name){
                 RemoveFurthestStar(s, iter->first);
-            } */
-        }
+            }
 
-        //if (m.find(s->name) == m.end()) {    // Is not in map
-        //    m[s->name] = s;
-        //}
+        }
     }
 
 
     void PrintStarConnections() {
-        for (auto iter = adjList.begin(); iter != adjList.end(); iter++) {
-
-            for (auto it = adjList[iter->first].begin(); it != adjList[iter->first].end(); it++) {
-                cout << it->first->name << " "<< it->second <<endl;
-            }
-            cout <<"^ is for star: " <<iter->first->name <<"-----------------" << endl;
+        Star* s = SearchRandomStar();
+        cout << s->name << endl;
+        for (auto iter = adjList[s].begin(); iter != adjList[s].end(); iter++) {
+            cout << iter->first->name << " "<< iter->second <<" "<< iter->first->constellation <<endl;
         }
     }
 
