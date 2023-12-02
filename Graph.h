@@ -133,6 +133,7 @@ public:
             }
 
             //Connection of new star to iterated star
+
             if (adjList[s].size() < maxConnections and s->name != iter->first->name) {
                 adjList[s][iter->first] = CalcDistance(s, iter->first);
             }
