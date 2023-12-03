@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <queue>
 #include <stack>
+#include <chrono>
 using namespace std;
 
 struct Star {
@@ -43,6 +44,8 @@ class Graph {
     vector<Star*> randomFind;
     int maxConnections = 5; // max amount of star connections 1 star can have
     int count = 0;
+    double DFStime;
+    double BFStime;
 
     double CalcDistance(Star* first, Star* second) {   // Calculate distance between two stars
         return sqrt(pow((second->x - first->x), 2) + pow((second->y - first->y), 2) + pow((second->z - first->z), 2));
@@ -163,13 +166,30 @@ public:
         }
     }
     Star* SearchRandomStar() {
+        using std::chrono::high_resolution_clock;
+        using std::chrono::duration_cast;
+        using std::chrono::duration;
+        using std::chrono::milliseconds;
         int randint = rand() % count;
         //cout << count << endl;
 
         Star* randStar = randomFind[randint];
         auto iter = adjList.begin();
+
+
+        auto t1 = high_resolution_clock::now(); //Calculate time taken
         Star* d = DFS(iter->first, randStar);
+        auto t2 = high_resolution_clock::now();
+        duration<double, std::milli> ms_double = t2 - t1;
+        DFStime = ms_double.count();
+
+
+        auto t3 = high_resolution_clock::now(); //Calculate time taken
         Star* b = BFS(iter->first, randStar);
+        auto t4 = high_resolution_clock::now();
+        duration<double, std::milli> ms_doublee = t4 - t3;
+        BFStime = ms_doublee.count();
+
 
         if (d == b) {return d;}
     }
@@ -208,7 +228,8 @@ public:
 
     void PrintStarConnections() {
         Star* s = SearchRandomStar();
-        cout << s->name << endl;
+        cout <<"BFS time: " <<BFStime << " " << "DFS time: "<<DFStime << endl;
+        cout << "Star Name: " <<s->name << endl;
         for (auto iter = adjList[s].begin(); iter != adjList[s].end(); iter++) {
             cout << iter->first->name << " "<< iter->second <<" "<< iter->first->constellation <<endl;
         }
