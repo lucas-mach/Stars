@@ -228,7 +228,7 @@ public:
 
     void PrintStarConnections() {
         Star* s = SearchRandomStar();
-        cout <<"BFS time: " <<BFStime << " " << "DFS time: "<<DFStime << endl;
+        cout <<"BFS time: " <<BFStime <<  " milliseconds " << "DFS time: "<<DFStime << " milliseconds"endl;
         cout << "Star Name: " <<s->name << endl;
         for (auto iter = adjList[s].begin(); iter != adjList[s].end(); iter++) {
             cout << iter->first->name << " "<< iter->second <<" "<< iter->first->constellation <<endl;
