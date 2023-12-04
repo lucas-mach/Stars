@@ -4,20 +4,9 @@
 #include "Graph.h"
 #include <vector>
 #include <ctime>
-//#include <SFML/Graphics.hpp>
-
-
-
+#include <chrono>
+#include <thread>
 using namespace std;
-
-/***
- * 1. Create function to retrieve data from website we found
- * 2. Create Data Structure (Weighted Graph)
- *      - Dijakstra's
- *      - Bredth First Search ????
- * 3. Graphical User Interface
-
-***/
 
 
 int main() {
@@ -30,7 +19,7 @@ int main() {
 
         getline(file, line); // skip header line
         while (getline(file, line)) {
-            if (starCount >= 100000) { // cap star count at 120,000
+            if (starCount >= 1000) { // cap star count at 120,000
                 break;
             }
 
@@ -81,6 +70,7 @@ int main() {
                     // << " " << star.vx << " " << star.vy << " " << star.vz << endl;
                     starCount++;
                     starSystem.AddStar(star);
+                    //cout << "a" << endl;
                 }
             }
             catch (const exception &e) {
@@ -90,13 +80,64 @@ int main() {
         }
     }
     file.close();
+    bool running = true;
+    cout << "* . . . * . . * . . . * . .* . . . * . . * . . . * . .* . . . * . . * . . . * . . * ." << endl;
+    cout << "* . . . * . . * . . . * . .   Welcome to your HYG Starship!   * . . . * . . * . . . * ."<< endl;
+    cout << "* . . . * . . * . . . * . .* . . . * . . * . . . * . .* . . . * . . * . . . * . . * ." << endl;
+    string name;
+    cout << "                             What's the name of your ship?" << endl;
+    cin >> name;
 
-    starSystem.PrintStarConnections();
+    string spaceship = "                                       .*    *\n"
+                       "                      *               .     *    .\n"
+                       "                                  .   *   *.    .  *\n"
+                       "                              *  ..  *   .  /\\  *\n"
+                       "                          .                |--|    . \n"
+                       "                                        * /____\\   *\n"
+                       "                                     *   |      |  *  .\n"
+                       "                                       . |______| *   *\n"
+                       "                                       * |_|  |_|  *\n"
+                       "                                     .   *v    v   * .  *\n";
+
+    cout << "                                            /\\ \n"
+            "                                           |--| \n"
+            "                                          /____\\\n"
+            "                                         |      |\n"
+            "                                         |______|\n"
+            "                                         |_|  |_|\n"
+            << "                              " << name << " is ready for take off!" << endl;
+
+    cout << endl;
+    cout << name << " will traverse the galaxy using a Graph data structure through a BFS and DFS to reach the same random star." << endl;
+    cout << "Type \"r\" to get see the statistics of a random star, plus the closest 5 stars to it!" << endl;
+    while (running) {
 
 
-    //SFML Window
-    //sf::RenderWindow window(sf::VideoMode(800, 600), "STARS");
-    //https://www.youtube.com/watch?v=BILAqQ-ZFDA
+        char x;
+        cin >> x;
+        if (x == 'e') {
+            running = false;
+            break;
+        }
+        if (x == 'r') {
+            cout << "Traveling through space and time . . ." << endl;
+            cout << spaceship;
+            for (int i = 10; i >= 0; --i) {
+                cout << "                                          v    v\n";
+                this_thread::sleep_for(chrono::milliseconds(10));
+                system("cls");
+            }
+
+            cout << endl;
+            cout << endl;
+            starSystem.PrintStarConnections();  // prints a Random Star's stats plus its 5 connections
+        }
+        cout << endl;
+        cout << "                  You can type r again to see a new star, or exit anytime by typing e." << endl;
+        cout << "* . . . * . . * . . . * . .* . . . * . . * . . . * . .* . . . * . * . . . * . * * . . . * . . * . * . . *" << endl;
+
+
+    }
 
     return 0;
 }
