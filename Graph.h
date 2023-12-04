@@ -65,7 +65,7 @@ class Graph {
         }
     }
 
-    
+
     Star* BFS(Star* s, Star* search) {
         // implementing a queue for BFS
         queue<Star*> q;
@@ -159,12 +159,6 @@ class Graph {
 
     }
 
-public:
-    ~Graph() {
-        for (auto &pair : adjList) {
-            delete pair.first;
-        }
-    }
     Star* SearchRandomStar() {
         using std::chrono::high_resolution_clock;
         using std::chrono::duration_cast;
@@ -194,6 +188,14 @@ public:
         if (d == b) {return d;}
     }
 
+public:
+    ~Graph() {
+        for (auto &pair : adjList) {
+            delete pair.first;
+        }
+    }
+
+
     void AddStar(Star* s) { // add Star to every other star if the other star has less than "MaxConnection" star connections
         // if has more than "maxConnection", find the star with the largest distance and replace
         adjList[s] = {};
@@ -208,7 +210,7 @@ public:
                 maxDistance[s] = dis;
             }
             else if (iter->second.size() >= maxConnections and s->name != iter->first->name and maxDistance[s] >
-            CalcDistance(iter->first, s)) {  //THIS ONE
+                                                                                                CalcDistance(iter->first, s)) {  //THIS ONE
                 RemoveFurthestStar(iter->first, s);
             }
 
@@ -228,17 +230,16 @@ public:
 
     void PrintStarConnections() {
         Star* s = SearchRandomStar();
-        cout <<"BFS time: " <<BFStime <<  " milliseconds " << "DFS time: "<<DFStime << " milliseconds"endl;
-        cout << "Star Name: " <<s->name << endl;
+        cout <<"BFS time: " << BFStime <<  " milliseconds | " << "DFS time: "<< DFStime << " milliseconds" << endl;
+        cout << "Your HYG Star: " <<s->name <<" | Constellation: "<<s->constellation <<" | Distance from Sun: "<< CalcDistance(s, randomFind[0]) << " light years" << endl;   //randomFind[0]is the sun because it is the first star read from data
+        cout << endl;
+        cout << "                                     Distance to Closest 5 Stars:\n"
+                "-------------------------------------------------------------------------------------------------------" << endl;
         for (auto iter = adjList[s].begin(); iter != adjList[s].end(); iter++) {
-            cout << iter->first->name << " "<< iter->second <<" "<< iter->first->constellation <<endl;
+            cout <<"HYG Star ID: " <<iter->first->name << " | Distance from Star we traveled to: "<< iter->second <<" light years | Constellation it is in: "<< iter->first->constellation <<endl;
+
         }
     }
 
 
 };
-
-
-
-
-
